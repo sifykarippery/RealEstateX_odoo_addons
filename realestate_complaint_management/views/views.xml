@@ -27,22 +27,40 @@
                   <button name="action_progress_complaint" string="Progress" type="object" attrs="{'invisible': [('state', 'not in', ['review'])]}"/>
                   <button name="action_solved_complaint" string="Done" type="object" attrs="{'invisible': [('state', 'not in', ['draft','review','progress'])]}"/>
                   <button name="action_drop_complaint" string="Reject" type="object" attrs="{'invisible': [('state', 'in', ['solved'])]}" />
-                  <button name="action_reset" string="Reset" type="object" attrs="{'invisible': [('state', 'in', ['draft'])]}"/>
 
                 <field name="state" widget="statusbar" statusbar_visible="draft,review,progress,solved,drop"/>
             </header>
             <sheet>
-                    
         <group>
+            <group>
           <field name="customer_name"/>
           <field name="email"/>
+                <field name="phone"/>
           <field name="complaint_type"/>
-          <field name="address"/>
+                </group>
+             <group>
+                            <span class="o_form_label o_td_label" name="address_name">
+                                <b>Address</b>
+                            </span>
+                            <div class="o_address_format">
+                                <field name="street1" placeholder="Street..." class="o_address_street"/>
+                                <field name="street2" placeholder="Street 2..." class="o_address_street"/>
+                                <field name="city" placeholder="City" class="o_address_city" />
+                                <field name="state_id" class="o_address_state" placeholder="State" context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}"/>
+                                <field name="zip" placeholder="ZIP" class="o_address_zip" />
+                                <div name="partner_address_country" class="d-flex justify-content-between">
+                                    <field name="country_id" placeholder="Country" class="o_address_country"/>
+                                </div>
+                            </div>
+                        </group>
+            <group>
+                <field name="complaint_date"/>
+            </group>
+            <group>
           <field name="description"/>
             <field name="action_plan"/>
-
+            </group>
         </group>
-
             </sheet>
             <div class="oe_chatter">
                 <field name="message_follower_ids"/>
@@ -57,17 +75,31 @@
     <field name="name">realestate_complaint_management kanban</field>
     <field name="model">realestate.complaint</field>
     <field name="arch" type="xml">
-          <kanban class="o_kanban_mobile" sample="1" quick_create="false" default_group_by="state">
+          <kanban class="o_kanban_mobile" sample="1" quick_create="false"
+                  colors="grey:state=='progress';blue:state=='review';green:state=='solved';red:state=='drop'"
+                  default_group_by="state">
                 <field name="customer_name"/>
           <field name="email"/>
           <field name="complaint_type"/>
                         <field name="complaint_reference"/>
+              <field name="activity_state"/>
+
 
                 <progressbar field="state"
-                    colors='{"solved": "success", "review": "warning", "drop": "danger"}'/>
+                    colors='{"solved": "success", "review": "planned","progress": "warning","drop": "danger"}'/>
                 <templates>
+
                     <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                             <div class="o_dropdown_kanban dropdown">
+                                    <a class="dropdown-toggle o-no-caret btn" role="button" data-bs-toggle="dropdown" data-bs-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                        <span class="fa fa-ellipsis-v"/>
+                                    </a>
+                                    <div class="dropdown-menu" role="menu">
+                                        <t t-if="widget.editable"><a role="menuitem" type="edit" class="dropdown-item">Edit</a></t>
+                                        <t t-if="widget.deletable"><a role="menuitem" type="delete" class="dropdown-item">Delete</a></t>
+                                    </div>
+                                </div>
                             <div class="o_kanban_record_top mb16">
                                 <div class="o_kanban_record_headings mt4">
                                     <strong class="o_kanban_record_title">
@@ -88,8 +120,12 @@
                                 <div class="oe_kanban_bottom_right">
                                     <field name="state"
                                         widget="label_selection"
-                                        options="{'classes': {'draft': 'default', 'drop': 'default', 'solved': 'success'}}"/>
+                                        options="{'classes': {'draft': 'default','progress':'warning', 'drop': 'danger', 'solved': 'success'}}"/>
                                 </div>
+
+
+        <div class="clearfix" > </div >
+
                             </div>
                         </div>
                     </t>
@@ -106,22 +142,28 @@
       <field name="view_mode">kanban,tree,form</field>
     </record>
 
+      <record id="realestate_complaint_view_search" model="ir.ui.view">
+   <field name="name">view.search.realestate.complaint</field>
+   <field name="model">realestate.complaint</field>
+   <field name="arch" type="xml">
+       <search>
+           <field name="customer_name"/>
+           <field name="email"/>
+           <field name="complaint_type"/>
+           <field name="complaint_date"/>
+           <field name="complaint_reference"/>
 
-    <!-- server action to the one above -->
-<!--
-    <record model="ir.actions.server" id="realestate_complaint_management.action_server">
-      <field name="name">realestate_complaint_management server</field>
-      <field name="model_id" ref="model_realestate_complaint_management_realestate_complaint_management"/>
-      <field name="state">code</field>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": model._name,
-        }
-      </field>
-    </record>
--->
+           <filter string="Reference no" name="complaint_reference"/>
+           <group expand="0" string="Group By">
+               <filter string="Type" name="complaint_type" context="{'group_by': 'complaint_type'}"/>
+               <filter string="date" name="complaint_date" context="{'group_by': 'complaint_date'}"/>
+
+           </group>
+       </search>
+   </field>
+</record>
+
+
 
     <!-- Top menu item -->
 

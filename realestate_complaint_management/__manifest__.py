@@ -21,18 +21,27 @@ and dealt with by RealEstateX’s employees.
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','mail'],
+    'depends': ['base','mail','website'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
         'security/security_data.xml',
         'data/sequence.xml',
+        'data/email_template.xml',
+        'report/realestate_complaint_report.xml',
         'views/views.xml',
-        # 'views/templates.xml',
+        'views/form_templates.xml',
+
     ],
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
     ],
+'assets': {
+        'web.assets_frontend': [
+            'realestate_complaint_management/static/src/js/custom_validation_website.js',
+        ],
+
+    },
 }
