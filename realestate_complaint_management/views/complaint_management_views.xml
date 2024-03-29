@@ -1,0 +1,231 @@
+<odoo>
+    <data>
+        <!-- list view definition -->
+
+        <record model="ir.ui.view" id="realestate_complaint_management.list">
+            <field name="name">realestate_complaint_management list</field>
+            <field name="model">realestate.complaint</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="customer_name"/>
+                    <field name="complaint_reference"/>
+                    <field name="email"/>
+                    <field name="complaint_type"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+    <!-- form view definition -->
+
+        <record model="ir.ui.view" id="realestate_complaint_management.form">
+            <field name="name">realestate_complaint_management form</field>
+            <field name="model">realestate.complaint</field>
+            <field name="arch" type="xml">
+                <form string="complaint detail">
+                    <header>
+
+                        <button name="action_review_complaint" string="Review" type="object"
+                                attrs="{'invisible': [('state', 'not in', ['draft'])]}"/>
+                        <button name="action_progress_complaint" string="Progress" type="object"
+                                attrs="{'invisible': [('state', 'not in', ['review'])]}"/>
+                        <button name="action_solved_complaint" string="Done" type="object"
+                                attrs="{'invisible': [('state', 'not in', ['draft','review','progress'])]}"/>
+                        <button name="action_drop_complaint" string="Reject" type="object"
+                                attrs="{'invisible': [('state', 'in', ['solved'])]}"/>
+
+
+                        <field name="state" widget="statusbar" statusbar_visible="draft,review,progress,solved,drop"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="o_Message_notificationIcon fa fa-envelope" type="object" string="Send Email"
+                                    name="action_open_email_wizard"
+                                    attrs="{'invisible': [('state', 'in', ['solved','drop','draft'])]}"/>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="customer_name"/>
+                                <field name="email"/>
+                                <field name="phone"/>
+                                <field name="complaint_type"/>
+                            </group>
+                            <group>
+                                <span class="o_form_label o_td_label" name="address_name">
+                                    <b>Address</b>
+                                </span>
+                                <div class="o_address_format">
+                                    <field name="street1" placeholder="Street..." class="o_address_street"/>
+                                    <field name="street2" placeholder="Street 2..." class="o_address_street"/>
+                                    <field name="city" placeholder="City" class="o_address_city"/>
+                                    <field name="state_id" class="o_address_state" placeholder="State"
+                                           context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}"/>
+                                    <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                    <div name="partner_address_country" class="d-flex justify-content-between">
+                                        <field name="country_id" placeholder="Country" class="o_address_country"/>
+                                    </div>
+                                </div>
+                            </group>
+                            <group>
+                                <field name="complaint_date"/>
+                            </group>
+                            <group>
+                                <field name="description"/>
+                                <field name="action_plan"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Kanban view definition -->
+        <record id="realestate_complaint_view_kanban" model="ir.ui.view">
+            <field name="name">realestate_complaint_management kanban</field>
+            <field name="model">realestate.complaint</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" sample="1" quick_create="false"
+                        colors="grey:state=='progress';blue:state=='review';green:state=='solved';red:state=='drop'"
+                        default_group_by="state" records_draggable="0">
+                    <field name="customer_name"/>
+                    <field name="email"/>
+                    <field name="complaint_type"/>
+                    <field name="complaint_reference"/>
+                    <field name="activity_state"/>
+
+
+                    <progressbar field="state"
+                                 colors='{"solved": "success", "review": "planned","progress": "warning","drop": "danger"}'/>
+                    <templates>
+
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_dropdown_kanban dropdown">
+                                    <a class="dropdown-toggle o-no-caret btn" role="button" data-bs-toggle="dropdown"
+                                       data-bs-display="static" href="#" aria-label="Dropdown menu"
+                                       title="Dropdown menu">
+                                        <span class="fa fa-ellipsis-v"/>
+                                    </a>
+                                    <div class="dropdown-menu" role="menu">
+                                        <t t-if="widget.editable">
+                                            <a role="menuitem" type="edit" class="dropdown-item">Edit</a>
+                                        </t>
+                                        <t t-if="widget.deletable">
+                                            <a role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_top mb16">
+                                    <div class="o_kanban_record_headings mt4">
+                                        <strong class="o_kanban_record_title">
+                                            <span t-out="record.complaint_reference.value"/>
+                                        </strong>
+                                    </div>
+                                    <strong>
+                                        <field name="customer_name"/>
+                                    </strong>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left text-muted">
+                                        <span>
+                                            <t t-out="record.complaint_type.value"/>
+                                        </span>
+                                        <field name="activity_ids" widget="kanban_activity"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="state"
+                                               widget="label_selection"
+                                               options="{'classes': {'draft': 'default','progress':'warning', 'drop': 'danger', 'solved': 'success'}}"/>
+                                    </div>
+
+
+                                    <div class="clearfix"></div>
+
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+
+        <!-- actions opening views on models  -->
+        <record model="ir.actions.act_window" id="realestate_complaint_management.action_window">
+            <field name="name">Complaint Management</field>
+            <field name="res_model">realestate.complaint</field>
+            <field name="view_mode">kanban,tree,form</field>
+        </record>
+
+        <!--adding search ,filter,group for model-->
+        <record id="realestate_complaint_view_search" model="ir.ui.view">
+            <field name="name">view.search.realestate.complaint</field>
+            <field name="model">realestate.complaint</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="customer_name"/>
+                    <field name="email"/>
+                    <field name="complaint_type"/>
+                    <field name="complaint_date"/>
+                    <field name="complaint_reference"/>
+
+                    <filter string="Reference no" name="complaint_reference"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Type" name="complaint_type" context="{'group_by': 'complaint_type'}"/>
+                        <filter string="date" name="complaint_date" context="{'group_by': 'complaint_date'}"/>
+
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!--view complaint type-->
+
+        <record model="ir.ui.view" id="realestate_complaint_type_list">
+            <field name="name">realestate.complaint.type.list</field>
+            <field name="model">complaint.type</field>
+            <field name="arch" type="xml">
+                <form>
+                    <field name="name"/>
+                </form>
+            </field>
+        </record>
+
+        <!-- actions opening views on Complaint Type -->
+
+        <record model="ir.actions.act_window" id="realestate_complaint_type_action_window">
+            <field name="name">Complaint Type</field>
+            <field name="res_model">complaint.type</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+
+        <!-- Top menu item -->
+
+        <menuitem name="RealEstateX_Complaint" id="realestate_complaint_management.menu_root"/>
+
+        <!-- menu categories -->
+
+        <menuitem name="Complaints" id="realestate_complaint_management.menu_1"
+                  parent="realestate_complaint_management.menu_root"/>
+        <menuitem name="Configration" id="realestate_complaint_management.configration"
+                  parent="realestate_complaint_management.menu_root" sequence="10"/>
+
+
+        <!-- actions -->
+
+        <menuitem name="Complaints" id="realestate_complaint_management.menu_complaint_detail_list"
+                  parent="realestate_complaint_management.menu_1"
+                  action="realestate_complaint_management.action_window" groups="realestate_complaint_management.realestatex_representative_access"/>
+        <menuitem name="Complaint Type" id="realestate_complaint_management.menu_complaint_type_list"
+                  parent="realestate_complaint_management.configration"
+                  action="realestate_complaint_type_action_window" groups="realestate_complaint_management.realestatex_representative_access"/>
+
+
+    </data>
+</odoo>

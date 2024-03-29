@@ -1,0 +1,13 @@
+
+<!--Data for complaint type -->
+<odoo>
+<record id="complaint_type_heating_issue" model="complaint.type">
+        <field name="name">Heating Issue</field>
+    </record>
+     <record id="complaint_type_electric_issue" model="complaint.type">
+        <field name="name">Electric Issue</field>
+    </record>
+    <record id="complaint_type_question" model="complaint.type">
+        <field name="name">Question</field>
+    </record>
+</odoo>
