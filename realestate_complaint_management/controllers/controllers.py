@@ -36,6 +36,7 @@ class RealestateComplaintForm(http.Controller):
             # Return an error response
             return request.render("realestate_complaint_management.error_message_template", {'error_message': str(e)})
 
+
     @http.route('/ask_realestatex/submit/',type='http', auth='public',website=True)
     def complaint_form_submit(self, **post):
         try:

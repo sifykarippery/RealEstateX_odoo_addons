@@ -181,4 +181,5 @@
         <strong>Error:</strong> <t t-esc="error_message"/>
     </div>
 </template>
+
 </odoo>

@@ -1,82 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<template id="report_complaint_work_order">
+    <template id="report_complaint_work_order">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <table class="company_header table-borderless" t-att-style="'height: %dmm;' % (din_header_spacing or 27)">
-                        <tr>
-                            <td><h3 class="mt0">Work Order</h3></td>
-                        </tr>
-                    </table>
-
-
+                        <table class="company_header table-borderless"
+                               t-att-style="'height: %dmm;' % (din_header_spacing or 27)">
+                            <tr>
+                                <td>
+                                    <h3 class="mt0">Work Order</h3>
+                                </td>
+                            </tr>
+                        </table>
                         <br/>
                         <br/>
-                         <div class="information_block">
+                        <div class="information_block">
                             <table class="table table-sm">
-
-
                                 <tr>
                                     <td>
-                                    <b>Issued Date</b>
+                                        <b>Issued Date</b>
                                     </td>
                                     <td>
                                         <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d.%m.%Y')"/>
-</td>
+                                    </td>
                                     <td>
-                                    <b>Customer Name</b>
+                                        <b>Customer Name</b>
                                     </td>
                                     <td>
                                         <span t-field="o.customer_name"/>
                                     </td>
-                                </tr><tr>
-                                <td>
-                                    <b>Ref</b>
-                                    </td>
-                                <td>
-                                    <span t-field="o.complaint_reference"/>
-                                </td>
-                                <td><b>Customer Address</b></td>
-                                <td>
-
-                                <span t-field="o.street1"/>,
-                                    <t t-if="o.street2">
-                                        <span t-field="o.street2"/></t><br/>
-
-                                <span t-field="o.city"/>,
-                                    <t t-if="o.state_id">
-
-                                        <span t-field="o.state_id"/></t><br/>
-                                <span t-field="o.zip"/>,
-                                    <t t-if="o.country_id">
-
-                                        <span t-field="o.country_id"/></t>
-                                </td>
-
-
-                            </tr>
+                                </tr>
                                 <tr>
                                     <td>
-                                    <b>Action Plan</b>
-                                </td>
-                                <td>
-                                    <span t-field="o.action_plan"/>
-                                </td>
+                                        <b>Ref</b>
+                                    </td>
+                                    <td>
+                                        <span t-field="o.complaint_reference"/>
+                                    </td>
+                                    <td>
+                                        <b>Customer Address</b>
+                                    </td>
+                                    <td>
+
+                                        <span t-field="o.street1"/>,
+                                        <t t-if="o.street2">
+                                            <span t-field="o.street2"/>
+                                        </t>
+                                        <br/>
+
+                                        <span t-field="o.city"/>,
+                                        <t t-if="o.state_id">
+
+                                            <span t-field="o.state_id"/>
+                                        </t>
+                                        <br/>
+                                        <span t-field="o.zip"/>,
+                                        <t t-if="o.country_id">
+
+                                            <span t-field="o.country_id"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>Action Plan</b>
+                                    </td>
+                                    <td>
+                                        <span t-field="o.action_plan"/>
+                                    </td>
                                 </tr>
 
-                        </table>
-                         </div>
+                            </table>
+                        </div>
                     </div>
                 </t>
             </t>
         </t>
-        </template>
+    </template>
 
 
-
-<record id="action_report_realestate_complaint" model="ir.actions.report">
+    <record id="action_report_realestate_complaint" model="ir.actions.report">
         <field name="name">Complaint Work Order</field>
         <field name="model">realestate.complaint</field>
         <field name="report_type">qweb-pdf</field>

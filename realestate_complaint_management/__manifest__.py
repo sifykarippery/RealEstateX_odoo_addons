@@ -11,7 +11,7 @@ tenants to submit complaints about their rented flats. These complaints will the
 and dealt with by RealEstateX’s employees.
     """,
 
-    'author': "My Company",
+    'author': "Sify Karippery Raphy",
     'website': "https://www.yourcompany.com",
 
     # Categories can be used to filter modules in modules listing
@@ -21,27 +21,22 @@ and dealt with by RealEstateX’s employees.
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','mail','website'],
+    'depends': ['base','mail','website','l10n_din5008'],
 
     # always loaded
     'data': [
-        'security/ir.model.access.csv',
         'security/security_data.xml',
+        'security/ir.model.access.csv',
         'data/sequence.xml',
         'data/email_template.xml',
+        'data/complaint_type_data.xml',
         'report/realestate_complaint_report.xml',
-        'views/views.xml',
-        'views/form_templates.xml',
+        'views/complaint_management_views.xml',
+        'views/complaint_website_form_templates.xml',
 
     ],
     # only loaded in demonstration mode
-    'demo': [
-        'demo/demo.xml',
-    ],
-'assets': {
-        'web.assets_frontend': [
-            'realestate_complaint_management/static/src/js/custom_validation_website.js',
-        ],
-
-    },
+'license': 'LGPL-3',
 }
+
+
