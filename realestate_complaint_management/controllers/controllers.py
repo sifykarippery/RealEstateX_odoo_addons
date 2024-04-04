@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 
 
 class RealestateComplaintForm(http.Controller):
-    @http.route(['/ask_realestatex/'],auth="public", website=True)
+    @http.route(['/ask_realestatex/'],auth="public",methods=['GET'], website=True)
     def complaint_form(self,**kw):
         """
                 This method renders the complaint form page and loads data for many2one fields.
@@ -37,7 +37,7 @@ class RealestateComplaintForm(http.Controller):
             return request.render("realestate_complaint_management.error_message_template", {'error_message': str(e)})
 
 
-    @http.route('/ask_realestatex/submit/',type='http', auth='public',website=True)
+    @http.route('/ask_realestatex/submit/',type='http',methods=['POST'],auth='public',website=True, csrf=False)
     def complaint_form_submit(self, **post):
         try:
             # model operation
@@ -50,9 +50,11 @@ class RealestateComplaintForm(http.Controller):
             complaint_detail = request.env['realestate.complaint'].sudo().create({
                 'customer_name': post.get('name'),
                 'email': post.get('email'),
+                'phone':post.get('phone'),
                 'street1':post.get('street1'),
                 'street2':post.get('street2'),
                 'zip':post.get('zip'),
+                'city':post.get('city'),
                 'country_id':country.id if country.id else country,
                 'state_id':state.id if state.id else state,
                 'complaint_type':type_complaint.id,
@@ -67,5 +69,4 @@ class RealestateComplaintForm(http.Controller):
         except Exception as e:
             error_message = str(e)
             return request.render('realestate_complaint_management.error_message_template', {'error_message': error_message})
-
 

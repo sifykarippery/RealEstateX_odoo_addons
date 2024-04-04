@@ -33,13 +33,13 @@ class RealestateComplaint(models.Model):
     country_id=fields.Many2one('res.country')
     complaint_type=fields.Many2one('complaint.type')
     description=fields.Text("Description")
-    action_plan=fields.Text("Action Plan")
+    action_plan=fields.Text("Action Plan",tracking=True)
     complaint_date = fields.Date(string='Complaint Date', default=datetime.today())
 
     state=fields.Selection([('draft', 'New'), ('review', 'In Review'),
                                  ('progress', 'In Progress'), ('solved', 'Solved'),
                                  ('drop', 'Dropped')],string='Complaint Status',
-                                default='draft', track_visibility='always',group_expand='_group_expand_states')
+                                default='draft', tracking=True,group_expand='_group_expand_states')
 
 
     @api.model
